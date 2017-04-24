@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="9Cf-r3-b6o">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Quiz_Game" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" alpha="0.65000000000000002" contentMode="TopLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="gameBackground.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="bqJ-SB-sgy">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Quiz Game" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="DVm-GS-4Xg">
+                                <rect key="frame" x="64.5" y="84" width="245" height="75"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="245" id="lp4-wM-0Dy"/>
+                                    <constraint firstAttribute="height" constant="75" id="udf-ze-Je2"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="48"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                                <size key="shadowOffset" width="0.0" height="1"/>
+                            </label>
+                            <segmentedControl opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="cTe-L9-Vhf">
+                                <rect key="frame" x="50" y="427" width="275" height="29"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="28" id="JDL-RQ-9Tv"/>
+                                    <constraint firstAttribute="width" constant="275" id="Uau-ge-m8y"/>
+                                </constraints>
+                                <segments>
+                                    <segment title="Single Player"/>
+                                    <segment title="Multi Player"/>
+                                </segments>
+                            </segmentedControl>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3HZ-YI-5k9">
+                                <rect key="frame" x="87" y="489" width="200" height="35"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="K8I-bd-uUH"/>
+                                    <constraint firstAttribute="height" constant="35" id="tTY-ws-XDx"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                                <state key="normal" title="Start Quiz"/>
+                                <connections>
+                                    <action selector="beginQuiz:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Ap1-Fq-Ie3"/>
+                                </connections>
+                            </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="multiplayerImage.png" translatesAutoresizingMaskIntoConstraints="NO" id="cd1-8S-V8v">
+                                <rect key="frame" x="209" y="304" width="100" height="115"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="115" id="RIS-Nm-PIx"/>
+                                    <constraint firstAttribute="width" constant="100" id="ZC8-NY-EgL"/>
+                                </constraints>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="singleplayerImage.png" translatesAutoresizingMaskIntoConstraints="NO" id="NJ2-3U-dCY">
+                                <rect key="frame" x="87" y="316" width="60" height="90"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="90" id="p9r-am-RTj"/>
+                                    <constraint firstAttribute="width" constant="60" id="yaq-DP-zgH"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="cd1-8S-V8v" firstAttribute="top" secondItem="DVm-GS-4Xg" secondAttribute="bottom" constant="145" id="1CA-8w-8E7"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="3HZ-YI-5k9" secondAttribute="trailing" constant="72" id="3m9-8h-izn"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="cTe-L9-Vhf" secondAttribute="trailing" constant="34" id="5dT-SC-J2j"/>
+                            <constraint firstItem="3HZ-YI-5k9" firstAttribute="top" secondItem="cTe-L9-Vhf" secondAttribute="bottom" constant="34" id="7X9-Yu-dy7"/>
+                            <constraint firstItem="cTe-L9-Vhf" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="KOT-JB-TpW"/>
+                            <constraint firstItem="3HZ-YI-5k9" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="71" id="N6V-tK-Br6"/>
+                            <constraint firstItem="cTe-L9-Vhf" firstAttribute="top" secondItem="DVm-GS-4Xg" secondAttribute="bottom" constant="268" id="QGJ-jn-O2D"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="cd1-8S-V8v" secondAttribute="trailing" constant="50" id="We5-oj-lD8"/>
+                            <constraint firstAttribute="trailing" secondItem="bqJ-SB-sgy" secondAttribute="trailing" id="btv-fo-Vwk"/>
+                            <constraint firstItem="cTe-L9-Vhf" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="34" id="hRU-xa-4x3"/>
+                            <constraint firstItem="cTe-L9-Vhf" firstAttribute="top" secondItem="DVm-GS-4Xg" secondAttribute="bottom" constant="268" id="hmN-Br-YhZ"/>
+                            <constraint firstItem="3HZ-YI-5k9" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="jOO-ZL-pkZ"/>
+                            <constraint firstItem="bqJ-SB-sgy" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="lEm-OJ-rqJ"/>
+                            <constraint firstItem="3HZ-YI-5k9" firstAttribute="top" secondItem="cTe-L9-Vhf" secondAttribute="bottom" constant="34" id="nj8-kf-9AO"/>
+                            <constraint firstItem="NJ2-3U-dCY" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="71" id="ofX-nk-BUI"/>
+                            <constraint firstItem="DVm-GS-4Xg" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="20" id="prA-V0-Zbo"/>
+                            <constraint firstItem="bqJ-SB-sgy" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="qbW-wx-hNH"/>
+                            <constraint firstItem="NJ2-3U-dCY" firstAttribute="top" secondItem="DVm-GS-4Xg" secondAttribute="bottom" constant="157" id="ra5-H5-rjf"/>
+                            <constraint firstItem="DVm-GS-4Xg" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="shF-f9-QvI"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="bqJ-SB-sgy" secondAttribute="bottom" id="xLq-lf-4tZ"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="6Er-eo-r6N">
+                        <barButtonItem key="rightBarButtonItem" title="Connect" id="NPS-na-jTB">
+                            <connections>
+                                <action selector="findPeers:" destination="BYZ-38-t0r" id="OdQ-O6-CAW"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="beginQuiz" destination="3HZ-YI-5k9" id="C6f-Gr-1My"/>
+                        <outlet property="gamePlayerCount" destination="cTe-L9-Vhf" id="l1B-TX-YQM"/>
+                        <segue destination="4Mi-8B-wuO" kind="show" identifier="proceedToGame" id="ndX-O9-LTW"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1076" y="137.18140929535232"/>
+        </scene>
+        <!--Quiz Screen-->
+        <scene sceneID="g6h-08-USL">
+            <objects>
+                <viewController id="4Mi-8B-wuO" customClass="QuizScreen" customModule="Quiz_Game" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="a3c-Hd-L6k"/>
+                        <viewControllerLayoutGuide type="bottom" id="PTV-35-MLi"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="wlS-Ml-Dd5">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" alpha="0.65000000000000002" contentMode="TopLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="gameBackground.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="48H-56-HJV">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="PTV-35-MLi" firstAttribute="top" secondItem="48H-56-HJV" secondAttribute="bottom" id="8gI-GQ-75N"/>
+                            <constraint firstAttribute="trailing" secondItem="48H-56-HJV" secondAttribute="trailing" id="OgA-he-jNf"/>
+                            <constraint firstItem="48H-56-HJV" firstAttribute="top" secondItem="wlS-Ml-Dd5" secondAttribute="top" id="SNc-qJ-60F"/>
+                            <constraint firstItem="48H-56-HJV" firstAttribute="leading" secondItem="wlS-Ml-Dd5" secondAttribute="leading" id="rRe-mr-huK"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="3lL-NB-BcL" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1960.8" y="137.18140929535232"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="gVL-cA-Jn2">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="9Cf-r3-b6o" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="mRw-ze-cTB">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="C4j-5E-3Z8"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="B1t-2H-rvz" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="136.80000000000001" y="137.18140929535232"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="gameBackground.jpg" width="1152" height="864"/>
+        <image name="multiplayerImage.png" width="256" height="256"/>
+        <image name="singleplayerImage.png" width="1862" height="2400"/>
+    </resources>
+</document>
