@@ -45,10 +45,16 @@ class ViewController: UIViewController {
     @IBAction func beginQuiz(_ sender: UIButton) {
         switch gamePlayerCount.selectedSegmentIndex {
         case 0:
-            //Do single player game stuff
-            print("Starting game with the following players: " + peers.players.last!)
-            
-            performSegue(withIdentifier: "proceedToGame", sender: nil)
+            if peers.players.count > 1 {
+                let tooManyPlayers = UIAlertController(title: "Too Many Players", message: "Select a multiplayer game instead.", preferredStyle: .alert)
+                let myAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil)
+                    tooManyPlayers.addAction(myAction)
+                    present(tooManyPlayers, animated: true, completion: nil)
+
+            } else {
+                performSegue(withIdentifier: "proceedToGame", sender: nil)
+                
+            }
             
         case 1:
             //Do multiplayer game stuff
@@ -78,7 +84,7 @@ class ViewController: UIViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let nextScreen = segue.destination as! QuizScreen
-            nextScreen.playerArray = peers.players
+            nextScreen.passedData = peers.players
             print("Sent player data to game screen")
         
     }

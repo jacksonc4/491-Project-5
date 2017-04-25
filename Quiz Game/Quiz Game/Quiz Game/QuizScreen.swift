@@ -17,51 +17,71 @@ struct player {
 }
 
 class QuizScreen: UIViewController {
-    
-    @IBOutlet weak var p1Image: UIImageView!
-    @IBOutlet weak var p2Image: UIImageView!
-    @IBOutlet weak var p3Image: UIImageView!
-    @IBOutlet weak var p4Image: UIImageView!
-       
-    @IBOutlet weak var p1Score: UILabel!
-    @IBOutlet weak var p2Score: UILabel!
-    @IBOutlet weak var p3Score: UILabel!
-    @IBOutlet weak var p4Score: UILabel!
-    
+   
+    var passedData: [String]!
+    var playerArray: [player]!
     var playerIcons:[UIImageView]!
     var scoreLabels:[UILabel]!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        playerIcons = [p1Image, p2Image, p3Image, p4Image]
-        scoreLabels = [p1Score, p2Score, p3Score, p4Score]
+    
         createPlayerIcons()
         showPlayers()
+        
     }
     
-    //Change to be of type player
-    var playerArray: [String] = []
-    
-    func showPlayers() {
-        for player in playerArray {
-            print(player)
+    func createPlayerArray() {
+        for name in passedData {
+            playerArray.append(player(name: name, score: 0, icon: #imageLiteral(resourceName: "placeholderPlayerIcon.png"), answer: nil))
             
         }
         
+        print("Built player array")
+        
     }
     
-    func createPlayerIcons() {
-        
-        for player in playerIcons {
-            player.image = #imageLiteral(resourceName: "placeholderPlayerIcon.png")
-            player.alpha = 0.75
-                
+    func showPlayers() {
+        for player in passedData {
+            print(player)
+
         }
-        
-        for score in scoreLabels {
-            score.text = "0"
-            score.alpha = 0.65
+
+    }
+
+    func createPlayerIcons() {
+        let screenSize = view.frame.size
+        let screenWidth = screenSize.width
+
+        for i in 0..<4 {
+            let blank = UIImageView(image: #imageLiteral(resourceName: "placeholderPlayerIcon.png"))
+            let scoreLabel = UILabel()
+            let nameLabel = UILabel()
+
+            let x_position = CGFloat((Int(screenWidth)/2) - (4 * 79) / 2 + (i * 79))
+            let frame = CGRect(x: x_position, y: 200, width: 78, height: 128)
+                blank.frame = CGRect(x: 0, y: 0, width: 78, height: 92)
+                blank.alpha = 0.75
+                nameLabel.frame = CGRect(x: 0, y: blank.center.y, width: 78, height: 50)
+                nameLabel.font = UIFont.systemFont(ofSize: 28)
+                nameLabel.text = passedData[i]
+                nameLabel.textColor = UIColor.lightGray
+                nameLabel.textAlignment = NSTextAlignment.center
+                scoreLabel.frame = CGRect(x: 0, y: 92, width: 78, height: 36)
+                scoreLabel.font = UIFont.systemFont(ofSize: 32)
+                scoreLabel.text = "0"
+                scoreLabel.textColor = UIColor.lightGray
+                scoreLabel.textAlignment = NSTextAlignment.center
+                    blank.tag = i
+                    nameLabel.tag = i
+                    scoreLabel.tag = i
+            
+            let containerView = UIView()
+                containerView.frame = frame
+                view.addSubview(containerView)
+                    containerView.addSubview(blank)
+                    containerView.addSubview(nameLabel)
+                    containerView.addSubview(scoreLabel)
             
         }
         
