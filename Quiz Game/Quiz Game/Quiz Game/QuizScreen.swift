@@ -27,8 +27,10 @@ class QuizScreen: UIViewController {
     
     var defaultValues:[defaultValue] = [defaultValue(icon: #imageLiteral(resourceName: "placeholderPlayerIcon.png"), name: "P1", score: 0), defaultValue(icon: #imageLiteral(resourceName: "placeholderPlayerIcon.png"), name: "P2", score: 0), defaultValue(icon: #imageLiteral(resourceName: "placeholderPlayerIcon.png"), name: "P3", score: 0), defaultValue(icon: #imageLiteral(resourceName: "placeholderPlayerIcon.png"), name: "P4", score: 0)]
     var passedData:[String]!
-    var playerIcons:[UIImageView] = [] //place different colored icons here
+    var playerIcons:[UIImageView] = []
+        var playerPictures:[UIImage] = [#imageLiteral(resourceName: "RedPlayerIcon.png"), #imageLiteral(resourceName: "BluePlayerIcon.png"), #imageLiteral(resourceName: "GreenPlayerIcon.png"), #imageLiteral(resourceName: "OrangePlayerIcon.png")]
     var nameLabels:[UILabel] = []
+        var playerColors:[UIColor] = [UIColor.red, UIColor.blue, UIColor.green, UIColor.orange]
     var scoreLabels:[UILabel] = []
     
     override func viewDidLoad() {
@@ -38,16 +40,20 @@ class QuizScreen: UIViewController {
         playAgain.isUserInteractionEnabled = false
         createPlayerIcons()
         formatGameFields()
-        showPlayers()
-        
+        updatePlayers()
+        addGestureRecognizers()
+       
     }
     
-    func showPlayers() {
-        for player in passedData {
-            print(player)
-
+    func updatePlayers() {
+        for i in 0..<passedData.count {
+            playerIcons[i].alpha = 1
+            playerIcons[i].image = playerPictures[i]
+            nameLabels[i].textColor = playerColors[i]
+            scoreLabels[i].textColor = UIColor.black
+            
         }
-
+        
     }
     
     func formatGameFields() {
@@ -106,6 +112,61 @@ class QuizScreen: UIViewController {
                     containerView.addSubview(scoreLabel)
             
         }
+        
+    }
+    
+    func addGestureRecognizers() {
+        let pickA = UITapGestureRecognizer(target: self, action: #selector(answerASelected))
+            pickA.numberOfTapsRequired = 1
+            answerA.addGestureRecognizer(pickA)
+        
+        let pickB = UITapGestureRecognizer(target: self, action: #selector(answerBSelected))
+            pickB.numberOfTapsRequired = 1
+            answerB.addGestureRecognizer(pickB)
+        
+        let pickC = UITapGestureRecognizer(target: self, action: #selector(answerCSelected))
+            pickC.numberOfTapsRequired = 1
+            answerC.addGestureRecognizer(pickC)
+        
+        let pickD = UITapGestureRecognizer(target: self, action: #selector(answerDSelected))
+            pickD.numberOfTapsRequired = 1
+            answerD.addGestureRecognizer(pickD)
+        
+    }
+    
+    func answerASelected() { //Determine selection color by player position in passedData array?
+        print("Selected answer A")
+        self.answerA.backgroundColor = playerColors[0]
+        self.answerB.backgroundColor = UIColor.lightGray
+        self.answerC.backgroundColor = UIColor.lightGray
+        self.answerD.backgroundColor = UIColor.lightGray
+        
+    }
+    
+    func answerBSelected() {
+        print("Selected answer B")
+        self.answerA.backgroundColor = UIColor.lightGray
+        self.answerB.backgroundColor = playerColors[0]
+        self.answerC.backgroundColor = UIColor.lightGray
+        self.answerD.backgroundColor = UIColor.lightGray
+        
+    }
+    
+    func answerCSelected() {
+        print("Selected answer C")
+        self.answerA.backgroundColor = UIColor.lightGray
+        self.answerB.backgroundColor = UIColor.lightGray
+        self.answerC.backgroundColor = playerColors[0]
+        self.answerD.backgroundColor = UIColor.lightGray
+        
+    }
+    
+    func answerDSelected() {
+        print("Selected answer D")
+        self.answerA.backgroundColor = UIColor.lightGray
+        self.answerB.backgroundColor = UIColor.lightGray
+        self.answerC.backgroundColor = UIColor.lightGray
+        self.answerD.backgroundColor = playerColors[0]
         
     }
     

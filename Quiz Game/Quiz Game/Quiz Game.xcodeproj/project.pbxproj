@@ -20,6 +20,10 @@
 		E9115EA61EAD58D8000EFAD2 /* PeerConnectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9115EA51EAD58D8000EFAD2 /* PeerConnectivity.swift */; };
 		E9115EA81EAD68AD000EFAD2 /* placeholderPlayerIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E9115EA71EAD68AD000EFAD2 /* placeholderPlayerIcon.png */; };
 		E9115EAA1EAD6AEA000EFAD2 /* QuizScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9115EA91EAD6AEA000EFAD2 /* QuizScreen.swift */; };
+		E92955BB1EB800A200194A0E /* RedPlayerIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E92955BA1EB800A200194A0E /* RedPlayerIcon.png */; };
+		E92955BF1EB800AC00194A0E /* BluePlayerIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E92955BC1EB800AC00194A0E /* BluePlayerIcon.png */; };
+		E92955C01EB800AC00194A0E /* GreenPlayerIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E92955BD1EB800AC00194A0E /* GreenPlayerIcon.png */; };
+		E92955C11EB800AC00194A0E /* OrangePlayerIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E92955BE1EB800AC00194A0E /* OrangePlayerIcon.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +63,10 @@
 		E9115EA51EAD58D8000EFAD2 /* PeerConnectivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeerConnectivity.swift; sourceTree = "<group>"; };
 		E9115EA71EAD68AD000EFAD2 /* placeholderPlayerIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = placeholderPlayerIcon.png; sourceTree = "<group>"; };
 		E9115EA91EAD6AEA000EFAD2 /* QuizScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuizScreen.swift; sourceTree = "<group>"; };
+		E92955BA1EB800A200194A0E /* RedPlayerIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = RedPlayerIcon.png; sourceTree = "<group>"; };
+		E92955BC1EB800AC00194A0E /* BluePlayerIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BluePlayerIcon.png; sourceTree = "<group>"; };
+		E92955BD1EB800AC00194A0E /* GreenPlayerIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GreenPlayerIcon.png; sourceTree = "<group>"; };
+		E92955BE1EB800AC00194A0E /* OrangePlayerIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = OrangePlayerIcon.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,12 +120,16 @@
 				E9115E711EAD287E000EFAD2 /* AppDelegate.swift */,
 				E9115E731EAD287E000EFAD2 /* ViewController.swift */,
 				E9115EA51EAD58D8000EFAD2 /* PeerConnectivity.swift */,
-				E9115E751EAD287E000EFAD2 /* Main.storyboard */,
 				E9115EA91EAD6AEA000EFAD2 /* QuizScreen.swift */,
+				E9115E751EAD287E000EFAD2 /* Main.storyboard */,
 				E9115E781EAD287E000EFAD2 /* Assets.xcassets */,
 				E9115E7A1EAD287E000EFAD2 /* LaunchScreen.storyboard */,
 				E9115E7D1EAD287E000EFAD2 /* Info.plist */,
+				E92955BA1EB800A200194A0E /* RedPlayerIcon.png */,
 				E9115EA11EAD3AE0000EFAD2 /* multiplayerImage.png */,
+				E92955BC1EB800AC00194A0E /* BluePlayerIcon.png */,
+				E92955BD1EB800AC00194A0E /* GreenPlayerIcon.png */,
+				E92955BE1EB800AC00194A0E /* OrangePlayerIcon.png */,
 				E9115EA71EAD68AD000EFAD2 /* placeholderPlayerIcon.png */,
 				E9115EA21EAD3AE0000EFAD2 /* singleplayerImage.png */,
 				E9115E9F1EAD2E05000EFAD2 /* gameBackground.jpg */,
@@ -258,8 +270,12 @@
 				E9115E7C1EAD287E000EFAD2 /* LaunchScreen.storyboard in Resources */,
 				E9115E791EAD287E000EFAD2 /* Assets.xcassets in Resources */,
 				E9115EA31EAD3AE0000EFAD2 /* multiplayerImage.png in Resources */,
+				E92955C01EB800AC00194A0E /* GreenPlayerIcon.png in Resources */,
+				E92955BB1EB800A200194A0E /* RedPlayerIcon.png in Resources */,
+				E92955C11EB800AC00194A0E /* OrangePlayerIcon.png in Resources */,
 				E9115E771EAD287E000EFAD2 /* Main.storyboard in Resources */,
 				E9115EA01EAD2E05000EFAD2 /* gameBackground.jpg in Resources */,
+				E92955BF1EB800AC00194A0E /* BluePlayerIcon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -540,6 +556,7 @@
 				E9115E981EAD287E000EFAD2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E9115E991EAD287E000EFAD2 /* Build configuration list for PBXNativeTarget "Quiz GameTests" */ = {
 			isa = XCConfigurationList;
@@ -548,6 +565,7 @@
 				E9115E9B1EAD287E000EFAD2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E9115E9C1EAD287E000EFAD2 /* Build configuration list for PBXNativeTarget "Quiz GameUITests" */ = {
 			isa = XCConfigurationList;
@@ -556,6 +574,7 @@
 				E9115E9E1EAD287E000EFAD2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
