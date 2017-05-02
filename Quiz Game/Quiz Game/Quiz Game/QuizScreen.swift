@@ -32,6 +32,7 @@ class QuizScreen: UIViewController {
     var nameLabels:[UILabel] = []
         var playerColors:[UIColor] = [UIColor.red, UIColor.blue, UIColor.green, UIColor.orange]
     var scoreLabels:[UILabel] = []
+    var bubbles:[UIImageView] = []
     var answerLabels:[UILabel] = []
     
     override func viewDidLoad() {
@@ -86,6 +87,7 @@ class QuizScreen: UIViewController {
             let bubble = UIImageView(image: #imageLiteral(resourceName: "bubble.png"))
             let answerLabel = UILabel()
                 bubble.frame = CGRect(x: 0, y: 0, width: 78, height: 50)
+                bubble.isHidden = true
                     bubble.tag = i
                 answerLabel.frame = CGRect(x: bubble.center.x - 10, y: bubble.center.y / 2 - 15, width: 39, height: 45)
                 answerLabel.font = UIFont.boldSystemFont(ofSize: 24)
@@ -113,6 +115,7 @@ class QuizScreen: UIViewController {
                 playerIcons.append(blank)
                 nameLabels.append(nameLabel)
                 scoreLabels.append(scoreLabel)
+                bubbles.append(bubble)
                 answerLabels.append(answerLabel)
             
             let containerView = UIView()
@@ -137,57 +140,109 @@ class QuizScreen: UIViewController {
             pickA.numberOfTapsRequired = 1
             answerA.addGestureRecognizer(pickA)
         
+        let confirmA = UITapGestureRecognizer(target: self, action: #selector(answerASubmit))
+            confirmA.numberOfTapsRequired = 2
+            answerA.addGestureRecognizer(confirmA)
+        
         let pickB = UITapGestureRecognizer(target: self, action: #selector(answerBSelected))
             pickB.numberOfTapsRequired = 1
             answerB.addGestureRecognizer(pickB)
+        
+        let confirmB = UITapGestureRecognizer(target: self, action: #selector(answerBSubmit))
+            confirmB.numberOfTapsRequired = 2
+            answerB.addGestureRecognizer(confirmB)
         
         let pickC = UITapGestureRecognizer(target: self, action: #selector(answerCSelected))
             pickC.numberOfTapsRequired = 1
             answerC.addGestureRecognizer(pickC)
         
+        let confirmC = UITapGestureRecognizer(target: self, action: #selector(answerCSubmit))
+            confirmC.numberOfTapsRequired = 2
+            answerC.addGestureRecognizer(confirmC)
+        
         let pickD = UITapGestureRecognizer(target: self, action: #selector(answerDSelected))
             pickD.numberOfTapsRequired = 1
             answerD.addGestureRecognizer(pickD)
         
+        let confirmD = UITapGestureRecognizer(target: self, action: #selector(answerDSubmit))
+            confirmD.numberOfTapsRequired = 2
+            answerD.addGestureRecognizer(confirmD)
+        
     }
     
     func answerASelected() { //Determine selection color by player position in passedData array?
-        self.answerLabels[0].text = "A"
-        self.answerLabels[0].textColor = playerColors[0]
-        self.answerA.backgroundColor = playerColors[0]
+        self.answerA.backgroundColor = playerColors[0].withAlphaComponent(0.75)
         self.answerB.backgroundColor = UIColor.lightGray
         self.answerC.backgroundColor = UIColor.lightGray
         self.answerD.backgroundColor = UIColor.lightGray
+        
+    }
+    
+    func answerASubmit() {
+        self.bubbles[0].isHidden = false
+        self.answerA.backgroundColor = playerColors[0]
+        self.answerLabels[0].text = "A"
+        self.answerLabels[0].textColor = playerColors[0]
+        removeAllGestureRecognizers()
         
     }
     
     func answerBSelected() {
-        self.answerLabels[0].text = "B"
-        self.answerLabels[0].textColor = playerColors[0]
         self.answerA.backgroundColor = UIColor.lightGray
-        self.answerB.backgroundColor = playerColors[0]
+        self.answerB.backgroundColor = playerColors[0].withAlphaComponent(0.65)
         self.answerC.backgroundColor = UIColor.lightGray
         self.answerD.backgroundColor = UIColor.lightGray
+        
+    }
+    
+    func answerBSubmit() {
+        self.bubbles[0].isHidden = false
+        self.answerB.backgroundColor = playerColors[0]
+        self.answerLabels[0].text = "B"
+        self.answerLabels[0].textColor = playerColors[0]
+        removeAllGestureRecognizers()
         
     }
     
     func answerCSelected() {
-        self.answerLabels[0].text = "C"
-        self.answerLabels[0].textColor = playerColors[0]
         self.answerA.backgroundColor = UIColor.lightGray
         self.answerB.backgroundColor = UIColor.lightGray
-        self.answerC.backgroundColor = playerColors[0]
+        self.answerC.backgroundColor = playerColors[0].withAlphaComponent(0.65)
         self.answerD.backgroundColor = UIColor.lightGray
         
     }
     
-    func answerDSelected() {
-        self.answerLabels[0].text = "D"
+    func answerCSubmit() {
+        self.bubbles[0].isHidden = false
+        self.answerC.backgroundColor = playerColors[0]
+        self.answerLabels[0].text = "C"
         self.answerLabels[0].textColor = playerColors[0]
+        removeAllGestureRecognizers()
+
+    }
+    
+    func answerDSelected() {
         self.answerA.backgroundColor = UIColor.lightGray
         self.answerB.backgroundColor = UIColor.lightGray
         self.answerC.backgroundColor = UIColor.lightGray
+        self.answerD.backgroundColor = playerColors[0].withAlphaComponent(0.65)
+        
+    }
+    
+    func answerDSubmit() {
+        self.bubbles[0].isHidden = false
         self.answerD.backgroundColor = playerColors[0]
+        self.answerLabels[0].text = "D"
+        self.answerLabels[0].textColor = playerColors[0]
+        removeAllGestureRecognizers()
+        
+    }
+    
+    func removeAllGestureRecognizers() {
+        self.answerA.gestureRecognizers?.forEach(answerA.removeGestureRecognizer(_:))
+        self.answerB.gestureRecognizers?.forEach(answerB.removeGestureRecognizer(_:))
+        self.answerC.gestureRecognizers?.forEach(answerC.removeGestureRecognizer(_:))
+        self.answerD.gestureRecognizers?.forEach(answerD.removeGestureRecognizer(_:))
         
     }
     
