@@ -24,6 +24,7 @@
 		E92955BF1EB800AC00194A0E /* BluePlayerIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E92955BC1EB800AC00194A0E /* BluePlayerIcon.png */; };
 		E92955C01EB800AC00194A0E /* GreenPlayerIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E92955BD1EB800AC00194A0E /* GreenPlayerIcon.png */; };
 		E92955C11EB800AC00194A0E /* OrangePlayerIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E92955BE1EB800AC00194A0E /* OrangePlayerIcon.png */; };
+		E92955C51EB829FD00194A0E /* bubble.png in Resources */ = {isa = PBXBuildFile; fileRef = E92955C41EB829FD00194A0E /* bubble.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +68,7 @@
 		E92955BC1EB800AC00194A0E /* BluePlayerIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BluePlayerIcon.png; sourceTree = "<group>"; };
 		E92955BD1EB800AC00194A0E /* GreenPlayerIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GreenPlayerIcon.png; sourceTree = "<group>"; };
 		E92955BE1EB800AC00194A0E /* OrangePlayerIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = OrangePlayerIcon.png; sourceTree = "<group>"; };
+		E92955C41EB829FD00194A0E /* bubble.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bubble.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +127,7 @@
 				E9115E781EAD287E000EFAD2 /* Assets.xcassets */,
 				E9115E7A1EAD287E000EFAD2 /* LaunchScreen.storyboard */,
 				E9115E7D1EAD287E000EFAD2 /* Info.plist */,
+				E92955C41EB829FD00194A0E /* bubble.png */,
 				E92955BA1EB800A200194A0E /* RedPlayerIcon.png */,
 				E9115EA11EAD3AE0000EFAD2 /* multiplayerImage.png */,
 				E92955BC1EB800AC00194A0E /* BluePlayerIcon.png */,
@@ -270,6 +273,7 @@
 				E9115E7C1EAD287E000EFAD2 /* LaunchScreen.storyboard in Resources */,
 				E9115E791EAD287E000EFAD2 /* Assets.xcassets in Resources */,
 				E9115EA31EAD3AE0000EFAD2 /* multiplayerImage.png in Resources */,
+				E92955C51EB829FD00194A0E /* bubble.png in Resources */,
 				E92955C01EB800AC00194A0E /* GreenPlayerIcon.png in Resources */,
 				E92955BB1EB800A200194A0E /* RedPlayerIcon.png in Resources */,
 				E92955C11EB800AC00194A0E /* OrangePlayerIcon.png in Resources */,

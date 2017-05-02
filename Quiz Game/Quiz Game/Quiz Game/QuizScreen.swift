@@ -32,6 +32,7 @@ class QuizScreen: UIViewController {
     var nameLabels:[UILabel] = []
         var playerColors:[UIColor] = [UIColor.red, UIColor.blue, UIColor.green, UIColor.orange]
     var scoreLabels:[UILabel] = []
+    var answerLabels:[UILabel] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -81,9 +82,18 @@ class QuizScreen: UIViewController {
             let blank = UIImageView(image: defaultValues[i].icon)
             let scoreLabel = UILabel()
             let nameLabel = UILabel()
+            
+            let bubble = UIImageView(image: #imageLiteral(resourceName: "bubble.png"))
+            let answerLabel = UILabel()
+                bubble.frame = CGRect(x: 0, y: 0, width: 78, height: 50)
+                    bubble.tag = i
+                answerLabel.frame = CGRect(x: bubble.center.x - 10, y: bubble.center.y / 2 - 15, width: 39, height: 45)
+                answerLabel.font = UIFont.boldSystemFont(ofSize: 24)
+                    answerLabel.tag = i
 
             let x_position = CGFloat((Int(screenWidth)/2) - (4 * 79) / 2 + (i * 79))
             let frame = CGRect(x: x_position, y: 200, width: 78, height: 128)
+            let frame2 = CGRect(x: x_position + 35, y: 150, width: 78, height: 128)
                 blank.frame = CGRect(x: 0, y: 0, width: 78, height: 92)
                 blank.alpha = 0.75
                 nameLabel.frame = CGRect(x: 0, y: blank.center.y, width: 78, height: 50)
@@ -103,6 +113,7 @@ class QuizScreen: UIViewController {
                 playerIcons.append(blank)
                 nameLabels.append(nameLabel)
                 scoreLabels.append(scoreLabel)
+                answerLabels.append(answerLabel)
             
             let containerView = UIView()
                 containerView.frame = frame
@@ -110,6 +121,12 @@ class QuizScreen: UIViewController {
                     containerView.addSubview(blank)
                     containerView.addSubview(nameLabel)
                     containerView.addSubview(scoreLabel)
+            
+            let answerView = UIView()
+                answerView.frame = frame2
+                view.addSubview(answerView)
+                    answerView.addSubview(bubble)
+                    answerView.addSubview(answerLabel)
             
         }
         
@@ -135,7 +152,8 @@ class QuizScreen: UIViewController {
     }
     
     func answerASelected() { //Determine selection color by player position in passedData array?
-        print("Selected answer A")
+        self.answerLabels[0].text = "A"
+        self.answerLabels[0].textColor = playerColors[0]
         self.answerA.backgroundColor = playerColors[0]
         self.answerB.backgroundColor = UIColor.lightGray
         self.answerC.backgroundColor = UIColor.lightGray
@@ -144,7 +162,8 @@ class QuizScreen: UIViewController {
     }
     
     func answerBSelected() {
-        print("Selected answer B")
+        self.answerLabels[0].text = "B"
+        self.answerLabels[0].textColor = playerColors[0]
         self.answerA.backgroundColor = UIColor.lightGray
         self.answerB.backgroundColor = playerColors[0]
         self.answerC.backgroundColor = UIColor.lightGray
@@ -153,7 +172,8 @@ class QuizScreen: UIViewController {
     }
     
     func answerCSelected() {
-        print("Selected answer C")
+        self.answerLabels[0].text = "C"
+        self.answerLabels[0].textColor = playerColors[0]
         self.answerA.backgroundColor = UIColor.lightGray
         self.answerB.backgroundColor = UIColor.lightGray
         self.answerC.backgroundColor = playerColors[0]
@@ -162,7 +182,8 @@ class QuizScreen: UIViewController {
     }
     
     func answerDSelected() {
-        print("Selected answer D")
+        self.answerLabels[0].text = "D"
+        self.answerLabels[0].textColor = playerColors[0]
         self.answerA.backgroundColor = UIColor.lightGray
         self.answerB.backgroundColor = UIColor.lightGray
         self.answerC.backgroundColor = UIColor.lightGray
