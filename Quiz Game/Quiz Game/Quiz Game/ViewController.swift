@@ -7,13 +7,21 @@
 //
 
 import UIKit
+import MultipeerConnectivity
 
-class ViewController: UIViewController {
+
+class ViewController: UIViewController, MCBrowserViewControllerDelegate {
 
     @IBOutlet weak var gamePlayerCount: UISegmentedControl!
     @IBOutlet weak var beginQuiz: UIButton!
     let peers = PeerConnectivity()
         var tempPlayerCount = 1
+    
+    var session: MCSession!
+    var peerID: MCPeerID!
+    
+    var browser: MCBrowserViewController!
+    var assistant: MCAdvertiserAssistant!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,10 +31,24 @@ class ViewController: UIViewController {
         beginQuiz.layer.cornerRadius = 3
         beginQuiz.layer.masksToBounds = true
         
+        self.peerID = MCPeerID(displayName: UIDevice.current.name)
+        self.session = MCSession(peer: peerID)
+        self.browser = MCBrowserViewController(serviceType: "chat", session: session)
+        self.assistant = MCAdvertiserAssistant(serviceType: "chat", discoveryInfo: nil, session: session)
+        
+        assistant.start()
+        browser.delegate = self
+        
+        //Hide Autolayout Warning
+        UserDefaults.standard.setValue(false, forKey:"_UIConstraintBasedLayoutLogUnsatisfiable")
+        
     }
     
     @IBAction func findPeers(_ sender: UIBarButtonItem) {
         
+        present(browser, animated: true, completion: nil)
+        
+        /*
         if peers.players.count < 4 {
             tempPlayerCount += 1
             peers.addPeer(player: "P\(tempPlayerCount)")
@@ -38,9 +60,24 @@ class ViewController: UIViewController {
                 tooManyPlayers.addAction(myAction)
                 present(tooManyPlayers, animated: true, completion: nil)
             
-        }
+        }*/
         
     }
+    
+    //**********************************************************
+    // required functions for MCBrowserViewControllerDelegate
+    func browserViewControllerDidFinish(_ browserViewController: MCBrowserViewController) {
+        // Called when the browser view controller is dismissed
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func browserViewControllerWasCancelled(_ browserViewController: MCBrowserViewController) {
+        // Called when the browser view controller is cancelled
+        dismiss(animated: true, completion: nil)
+    }
+    //**********************************************************
+    
+
     
     @IBAction func beginQuiz(_ sender: UIButton) {
         switch gamePlayerCount.selectedSegmentIndex {
@@ -85,6 +122,8 @@ class ViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let nextScreen = segue.destination as! QuizScreen
             nextScreen.passedData = peers.players
+            nextScreen.session = session
+            nextScreen.peerID = peerID
             print("Sent player data to game screen")
         
     }

@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import MultipeerConnectivity
+import Foundation
 
 struct defaultValue {
     var icon:UIImage!
@@ -15,7 +17,14 @@ struct defaultValue {
     
 }
 
-class QuizScreen: UIViewController {
+struct questionData {
+    var number:Int!
+    var questionText:String!
+    var options:[String]!
+    var correctOption:String!
+}
+
+class QuizScreen: UIViewController, MCSessionDelegate {
     @IBOutlet weak var questionField: UIView!
     @IBOutlet weak var answerA: UIView!
     @IBOutlet weak var answerB: UIView!
@@ -24,6 +33,14 @@ class QuizScreen: UIViewController {
     @IBOutlet weak var questionNumber: UILabel!
     @IBOutlet weak var gameStatus: UILabel!
     @IBOutlet weak var playAgain: UIButton!
+    
+    @IBOutlet weak var timerLabel: UILabel!
+    @IBOutlet weak var DLabel: UILabel!
+    @IBOutlet weak var CLabel: UILabel!
+    @IBOutlet weak var BLabel: UILabel!
+    @IBOutlet weak var ALabel: UILabel!
+    @IBOutlet weak var questionLabel: UILabel!
+    
     
     var defaultValues:[defaultValue] = [defaultValue(icon: #imageLiteral(resourceName: "placeholderPlayerIcon.png"), name: "P1", score: 0), defaultValue(icon: #imageLiteral(resourceName: "placeholderPlayerIcon.png"), name: "P2", score: 0), defaultValue(icon: #imageLiteral(resourceName: "placeholderPlayerIcon.png"), name: "P3", score: 0), defaultValue(icon: #imageLiteral(resourceName: "placeholderPlayerIcon.png"), name: "P4", score: 0)]
     var passedData:[String]!
@@ -35,16 +52,46 @@ class QuizScreen: UIViewController {
     var bubbles:[UIImageView] = []
     var answerLabels:[UILabel] = []
     
+    var session: MCSession!
+    var peerID: MCPeerID!
+    
+    var questionStruct = questionData()
+    var totalNumQuestions = 0
+    var currentTopic = ""
+    var timer = Timer()
+    var counter = 0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     
+        qarray = []
         playAgain.alpha = 0
         playAgain.isUserInteractionEnabled = false
         createPlayerIcons()
         formatGameFields()
         updatePlayers()
         addGestureRecognizers()
+        
+        session.delegate = self
        
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.updateTimer), userInfo: nil, repeats: true)
+        
+        getQuestions()
+        
+        print(session.connectedPeers)
+        print(peerID.displayName)
+        
+    }
+    
+    func updateTimer() {
+        let remaining = 20 - counter
+        self.timerLabel.text = String(remaining)
+        counter += 1
+        
+        if (counter == 21) {
+            counter = 0
+            timer.invalidate()
+        }
     }
     
     func updatePlayers() {
@@ -170,6 +217,71 @@ class QuizScreen: UIViewController {
         
     }
     
+    var qarray = [String]()
+    
+    func getQuestions() {
+        
+        let urlString = "http://www.people.vcu.edu/~ebulut/jsonFiles/quiz1.json"
+        let url = URL(string: urlString)
+        let urlsession = URLSession.shared
+        
+        // create a data task
+        let task = urlsession.dataTask(with: url!, completionHandler: { (data, response, error) in
+            
+            if let result = data{
+                
+                print("inside get JSON")
+                print(result)
+                do{
+                    let json = try JSONSerialization.jsonObject(with: result, options: .allowFragments)
+                    
+                    if let dictionary = json as? [String:Any]{
+                        self.totalNumQuestions = dictionary["numberOfQuestions"] as! Int
+                        self.currentTopic = dictionary["topic"] as! String
+                        if let questions = dictionary["questions"] as? [[String:Any]] {
+                            
+                            let currentQuestion = questions[0] as! [String:Any]
+                            let questionText = currentQuestion["questionSentence"] as! String
+                            let number = currentQuestion["number"] as! Int
+                            let correctOption = currentQuestion["correctOption"] as! String
+                            let options = currentQuestion["options"] as! [String:Any]
+                            
+                            var tempArray = [String]()
+                            tempArray.append(options["A"] as! String)
+                            tempArray.append(options["B"] as! String)
+                            tempArray.append(options["C"] as! String)
+                            tempArray.append(options["D"] as! String)
+                            
+                            self.questionStruct = questionData(number: number, questionText: questionText, options: tempArray, correctOption: correctOption)
+                            
+                        }
+                        
+
+                    }
+                    print(self.questionStruct)
+                    self.updateQuestion()
+                }
+                catch{
+                    print("Error")
+                }
+            }
+            
+        })
+        // always call resume() to start
+        task.resume()
+    }
+    
+    func updateQuestion() {
+        self.ALabel.text = questionStruct.options[0]
+        self.BLabel.text = questionStruct.options[1]
+        self.CLabel.text = questionStruct.options[2]
+        self.DLabel.text = questionStruct.options[3]
+        self.questionLabel.text = questionStruct.questionText
+        self.gameStatus.text = currentTopic
+        self.questionNumber.text = "Question \(questionStruct.number!)/\(totalNumQuestions)"
+        
+    }
+    
     func answerASelected() { //Determine selection color by player position in passedData array?
         self.answerA.backgroundColor = playerColors[0].withAlphaComponent(0.75)
         self.answerB.backgroundColor = UIColor.lightGray
@@ -245,5 +357,45 @@ class QuizScreen: UIViewController {
         self.answerD.gestureRecognizers?.forEach(answerD.removeGestureRecognizer(_:))
         
     }
+    
+    //**********************************************************
+    // required functions for MCSessionDelegate
+    func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL, withError error: Error?) {
+        
+    }
+    
+    func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
+        
+        // this needs to be run on the main thread
+        DispatchQueue.main.async(execute: {
+            
+        })
+    }
+    
+    func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {
+        
+    }
+    
+    func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
+        
+    }
+    
+    func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
+        
+        // Called when a connected peer changes state (for example, goes offline)
+        
+        switch state {
+        case MCSessionState.connected:
+            print("Connected: \(peerID.displayName)")
+            
+        case MCSessionState.connecting:
+            print("Connecting: \(peerID.displayName)")
+            
+        case MCSessionState.notConnected:
+            print("Not Connected: \(peerID.displayName)")
+        }
+        
+    }
+    //**********************************************************
     
 }
