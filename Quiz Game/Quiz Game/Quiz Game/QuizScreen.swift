@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import MultipeerConnectivity
 import Foundation
 
 struct defaultValue {
@@ -24,7 +23,7 @@ struct questionData {
     var correctOption:String!
 }
 
-class QuizScreen: UIViewController, MCSessionDelegate {
+class QuizScreen: UIViewController {
     @IBOutlet weak var questionField: UIView!
     @IBOutlet weak var answerA: UIView!
     @IBOutlet weak var answerB: UIView!
@@ -41,6 +40,7 @@ class QuizScreen: UIViewController, MCSessionDelegate {
     @IBOutlet weak var ALabel: UILabel!
     @IBOutlet weak var questionLabel: UILabel!
     
+    let passedPeers = PeerConnectivity()
     
     var defaultValues:[defaultValue] = [defaultValue(icon: #imageLiteral(resourceName: "placeholderPlayerIcon.png"), name: "P1", score: 0), defaultValue(icon: #imageLiteral(resourceName: "placeholderPlayerIcon.png"), name: "P2", score: 0), defaultValue(icon: #imageLiteral(resourceName: "placeholderPlayerIcon.png"), name: "P3", score: 0), defaultValue(icon: #imageLiteral(resourceName: "placeholderPlayerIcon.png"), name: "P4", score: 0)]
     var passedData:[String]!
@@ -51,9 +51,6 @@ class QuizScreen: UIViewController, MCSessionDelegate {
     var scoreLabels:[UILabel] = []
     var bubbles:[UIImageView] = []
     var answerLabels:[UILabel] = []
-    
-    var session: MCSession!
-    var peerID: MCPeerID!
     
     var questionStruct = questionData()
     var totalNumQuestions = 0
@@ -72,17 +69,17 @@ class QuizScreen: UIViewController, MCSessionDelegate {
         updatePlayers()
         addGestureRecognizers()
         
-        session.delegate = self
-       
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.updateTimer), userInfo: nil, repeats: true)
         
         getQuestions()
         
-        print(session.connectedPeers)
-        print(peerID.displayName)
+        print("Session info from Quiz Screen")
+        print("Connected peers: \(passedPeers.session.connectedPeers.count)")
+        print("Total players passed to Quiz Screen: \(passedData)")
+        print(passedPeers.peerID.displayName)
         
     }
-    
+
     func updateTimer() {
         let remaining = 20 - counter
         self.timerLabel.text = String(remaining)
@@ -283,7 +280,7 @@ class QuizScreen: UIViewController, MCSessionDelegate {
     }
     
     func answerASelected() { //Determine selection color by player position in passedData array?
-        self.answerA.backgroundColor = playerColors[0].withAlphaComponent(0.75)
+        self.answerA.backgroundColor = playerColors[passedData.index(of: passedPeers.peerID.displayName)!].withAlphaComponent(0.75)
         self.answerB.backgroundColor = UIColor.lightGray
         self.answerC.backgroundColor = UIColor.lightGray
         self.answerD.backgroundColor = UIColor.lightGray
@@ -291,27 +288,27 @@ class QuizScreen: UIViewController, MCSessionDelegate {
     }
     
     func answerASubmit() {
-        self.bubbles[0].isHidden = false
-        self.answerA.backgroundColor = playerColors[0]
-        self.answerLabels[0].text = "A"
-        self.answerLabels[0].textColor = playerColors[0]
+        self.bubbles[passedData.index(of: passedPeers.peerID.displayName)!].isHidden = false
+        self.answerA.backgroundColor = playerColors[passedData.index(of: passedPeers.peerID.displayName)!]
+        self.answerLabels[passedData.index(of: passedPeers.peerID.displayName)!].text = "A"
+        self.answerLabels[passedData.index(of: passedPeers.peerID.displayName)!].textColor = playerColors[passedData.index(of: passedPeers.peerID.displayName)!]
         removeAllGestureRecognizers()
         
     }
     
     func answerBSelected() {
         self.answerA.backgroundColor = UIColor.lightGray
-        self.answerB.backgroundColor = playerColors[0].withAlphaComponent(0.65)
+        self.answerB.backgroundColor = playerColors[passedData.index(of: passedPeers.peerID.displayName)!].withAlphaComponent(0.65)
         self.answerC.backgroundColor = UIColor.lightGray
         self.answerD.backgroundColor = UIColor.lightGray
         
     }
     
     func answerBSubmit() {
-        self.bubbles[0].isHidden = false
-        self.answerB.backgroundColor = playerColors[0]
-        self.answerLabels[0].text = "B"
-        self.answerLabels[0].textColor = playerColors[0]
+        self.bubbles[passedData.index(of: passedPeers.peerID.displayName)!].isHidden = false
+        self.answerB.backgroundColor = playerColors[passedData.index(of: passedPeers.peerID.displayName)!]
+        self.answerLabels[passedData.index(of: passedPeers.peerID.displayName)!].text = "B"
+        self.answerLabels[passedData.index(of: passedPeers.peerID.displayName)!].textColor = playerColors[passedData.index(of: passedPeers.peerID.displayName)!]
         removeAllGestureRecognizers()
         
     }
@@ -319,16 +316,16 @@ class QuizScreen: UIViewController, MCSessionDelegate {
     func answerCSelected() {
         self.answerA.backgroundColor = UIColor.lightGray
         self.answerB.backgroundColor = UIColor.lightGray
-        self.answerC.backgroundColor = playerColors[0].withAlphaComponent(0.65)
+        self.answerC.backgroundColor = playerColors[passedData.index(of: passedPeers.peerID.displayName)!].withAlphaComponent(0.65)
         self.answerD.backgroundColor = UIColor.lightGray
         
     }
     
     func answerCSubmit() {
-        self.bubbles[0].isHidden = false
-        self.answerC.backgroundColor = playerColors[0]
-        self.answerLabels[0].text = "C"
-        self.answerLabels[0].textColor = playerColors[0]
+        self.bubbles[passedData.index(of: passedPeers.peerID.displayName)!].isHidden = false
+        self.answerC.backgroundColor = playerColors[passedData.index(of: passedPeers.peerID.displayName)!]
+        self.answerLabels[passedData.index(of: passedPeers.peerID.displayName)!].text = "C"
+        self.answerLabels[passedData.index(of: passedPeers.peerID.displayName)!].textColor = playerColors[passedData.index(of: passedPeers.peerID.displayName)!]
         removeAllGestureRecognizers()
 
     }
@@ -337,15 +334,15 @@ class QuizScreen: UIViewController, MCSessionDelegate {
         self.answerA.backgroundColor = UIColor.lightGray
         self.answerB.backgroundColor = UIColor.lightGray
         self.answerC.backgroundColor = UIColor.lightGray
-        self.answerD.backgroundColor = playerColors[0].withAlphaComponent(0.65)
+        self.answerD.backgroundColor = playerColors[passedData.index(of: passedPeers.peerID.displayName)!].withAlphaComponent(0.65)
         
     }
     
     func answerDSubmit() {
-        self.bubbles[0].isHidden = false
-        self.answerD.backgroundColor = playerColors[0]
-        self.answerLabels[0].text = "D"
-        self.answerLabels[0].textColor = playerColors[0]
+        self.bubbles[passedData.index(of: passedPeers.peerID.displayName)!].isHidden = false
+        self.answerD.backgroundColor = playerColors[passedData.index(of: passedPeers.peerID.displayName)!]
+        self.answerLabels[passedData.index(of: passedPeers.peerID.displayName)!].text = "D"
+        self.answerLabels[passedData.index(of: passedPeers.peerID.displayName)!].textColor = playerColors[passedData.index(of: passedPeers.peerID.displayName)!]
         removeAllGestureRecognizers()
         
     }
@@ -357,45 +354,5 @@ class QuizScreen: UIViewController, MCSessionDelegate {
         self.answerD.gestureRecognizers?.forEach(answerD.removeGestureRecognizer(_:))
         
     }
-    
-    //**********************************************************
-    // required functions for MCSessionDelegate
-    func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL, withError error: Error?) {
-        
-    }
-    
-    func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
-        
-        // this needs to be run on the main thread
-        DispatchQueue.main.async(execute: {
-            
-        })
-    }
-    
-    func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {
-        
-    }
-    
-    func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
-        
-    }
-    
-    func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
-        
-        // Called when a connected peer changes state (for example, goes offline)
-        
-        switch state {
-        case MCSessionState.connected:
-            print("Connected: \(peerID.displayName)")
-            
-        case MCSessionState.connecting:
-            print("Connecting: \(peerID.displayName)")
-            
-        case MCSessionState.notConnected:
-            print("Not Connected: \(peerID.displayName)")
-        }
-        
-    }
-    //**********************************************************
     
 }
