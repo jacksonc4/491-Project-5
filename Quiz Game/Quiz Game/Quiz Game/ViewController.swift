@@ -105,8 +105,8 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let nextScreen = segue.destination as! QuizScreen
             nextScreen.passedData = players
-            nextScreen.passedPeers.session = session
-            nextScreen.passedPeers.peerID = peerID
+            nextScreen.receivedSession = session
+            nextScreen.receivedPeerID = peerID
             print("Sent player data to game screen")
         
     }

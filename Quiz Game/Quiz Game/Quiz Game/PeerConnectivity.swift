@@ -5,7 +5,7 @@
 //  Created by Curtis Jackson on 4/23/17.
 //  Copyright © 2017 491 A5. All rights reserved.
 //
-
+/*
 import UIKit
 import MultipeerConnectivity
 
@@ -97,3 +97,4 @@ class PeerConnectivity: NSObject, MCBrowserViewControllerDelegate, MCSessionDele
     /***End of MCBrowser ViewController Delegate Functions***/
     
 }
+*/

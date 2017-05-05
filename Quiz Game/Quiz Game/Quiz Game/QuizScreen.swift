@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MultipeerConnectivity
 import Foundation
 
 struct defaultValue {
@@ -23,7 +24,7 @@ struct questionData {
     var correctOption:String!
 }
 
-class QuizScreen: UIViewController {
+class QuizScreen: UIViewController, MCSessionDelegate {
     @IBOutlet weak var questionField: UIView!
     @IBOutlet weak var answerA: UIView!
     @IBOutlet weak var answerB: UIView!
@@ -40,7 +41,8 @@ class QuizScreen: UIViewController {
     @IBOutlet weak var ALabel: UILabel!
     @IBOutlet weak var questionLabel: UILabel!
     
-    let passedPeers = PeerConnectivity()
+    var receivedSession: MCSession!
+    var receivedPeerID: MCPeerID!
     
     var defaultValues:[defaultValue] = [defaultValue(icon: #imageLiteral(resourceName: "placeholderPlayerIcon.png"), name: "P1", score: 0), defaultValue(icon: #imageLiteral(resourceName: "placeholderPlayerIcon.png"), name: "P2", score: 0), defaultValue(icon: #imageLiteral(resourceName: "placeholderPlayerIcon.png"), name: "P3", score: 0), defaultValue(icon: #imageLiteral(resourceName: "placeholderPlayerIcon.png"), name: "P4", score: 0)]
     var passedData:[String]!
@@ -74,9 +76,9 @@ class QuizScreen: UIViewController {
         getQuestions()
         
         print("Session info from Quiz Screen")
-        print("Connected peers: \(passedPeers.session.connectedPeers.count)")
+        print("Connected peers: \(receivedSession.connectedPeers.count)")
         print("Total players passed to Quiz Screen: \(passedData)")
-        print(passedPeers.peerID.displayName)
+        print(receivedPeerID.displayName)
         
     }
 
@@ -280,92 +282,172 @@ class QuizScreen: UIViewController {
     }
     
     func answerASelected() {
-        for i in 0..<passedData.count {
-            self.answerA.backgroundColor = playerColors[i].withAlphaComponent(0.75)
-            self.answerB.backgroundColor = UIColor.lightGray
-            self.answerC.backgroundColor = UIColor.lightGray
-            self.answerD.backgroundColor = UIColor.lightGray
-            
-        }
-        
+        self.answerA.backgroundColor = playerColors[passedData.index(of: receivedPeerID.displayName)!].withAlphaComponent(0.75)
+        self.answerB.backgroundColor = UIColor.lightGray
+        self.answerC.backgroundColor = UIColor.lightGray
+        self.answerD.backgroundColor = UIColor.lightGray
+
     }
     
     func answerASubmit() {
-        for i in 0..<passedData.count {
-            self.bubbles[i].isHidden = false
-            self.answerA.backgroundColor = playerColors[i]
-            self.answerLabels[i].text = "A"
-            self.answerLabels[i].textColor = playerColors[i]
-            removeAllGestureRecognizers()
+        let answerToSend = "A"
+        let dataToSend =  NSKeyedArchiver.archivedData(withRootObject: answerToSend)
+        
+            do {
+                try self.receivedSession.send(dataToSend, toPeers: self.receivedSession.connectedPeers, with: .unreliable)
+            }
             
-        }
+            catch let error {
+                print("[[Error]] \(error)")
+            
+            }
+
+        updateGameView(answer: "A", id: receivedPeerID)
+        removeAllGestureRecognizers()
         
     }
     
     func answerBSelected() {
-        for i in 0..<passedData.count {
-            self.answerA.backgroundColor = UIColor.lightGray
-            self.answerB.backgroundColor = playerColors[i].withAlphaComponent(0.65)
-            self.answerC.backgroundColor = UIColor.lightGray
-            self.answerD.backgroundColor = UIColor.lightGray
-        
-        }
-        
+        self.answerA.backgroundColor = UIColor.lightGray
+        self.answerB.backgroundColor = playerColors[passedData.index(of: receivedPeerID.displayName)!].withAlphaComponent(0.65)
+        self.answerC.backgroundColor = UIColor.lightGray
+        self.answerD.backgroundColor = UIColor.lightGray
+
     }
     
     func answerBSubmit() {
-        for i in 0..<passedData.count {
-            self.bubbles[i].isHidden = false
-            self.answerB.backgroundColor = playerColors[i]
-            self.answerLabels[i].text = "B"
-            self.answerLabels[i].textColor = playerColors[i]
-            removeAllGestureRecognizers()
+        let answerToSend = "B"
+        let dataToSend =  NSKeyedArchiver.archivedData(withRootObject: answerToSend)
+        
+            do {
+                try self.receivedSession.send(dataToSend, toPeers: self.receivedSession.connectedPeers, with: .unreliable)
+            }
             
-        }
+            catch let error {
+                print("[[Error]] \(error)")
+            
+            }
+
+        updateGameView(answer: "B", id: receivedPeerID)
+        removeAllGestureRecognizers()
         
     }
     
     func answerCSelected() {
-        for i in 0..<passedData.count {
-            self.answerA.backgroundColor = UIColor.lightGray
-            self.answerB.backgroundColor = UIColor.lightGray
-            self.answerC.backgroundColor = playerColors[i].withAlphaComponent(0.65)
-            self.answerD.backgroundColor = UIColor.lightGray
-        
-        }
+        self.answerA.backgroundColor = UIColor.lightGray
+        self.answerB.backgroundColor = UIColor.lightGray
+        self.answerC.backgroundColor = playerColors[passedData.index(of: receivedPeerID.displayName)!].withAlphaComponent(0.65)
+        self.answerD.backgroundColor = UIColor.lightGray
         
     }
     
     func answerCSubmit() {
-        for i in 0..<passedData.count {
-            self.bubbles[i].isHidden = false
-            self.answerC.backgroundColor = playerColors[i]
-            self.answerLabels[i].text = "C"
-            self.answerLabels[i].textColor = playerColors[i]
-            removeAllGestureRecognizers()
+        let answerToSend = "C"
+        let dataToSend =  NSKeyedArchiver.archivedData(withRootObject: answerToSend)
         
-        }
+            do {
+                try self.receivedSession.send(dataToSend, toPeers: self.receivedSession.connectedPeers, with: .unreliable)
+            }
+            
+            catch let error {
+                print("[[Error]] \(error)")
+            
+            }
 
+        updateGameView(answer: "C", id: receivedPeerID)
+        removeAllGestureRecognizers()
+    
     }
     
     func answerDSelected() {
-        for i in 0..<passedData.count {
-            self.answerA.backgroundColor = UIColor.lightGray
-            self.answerB.backgroundColor = UIColor.lightGray
-            self.answerC.backgroundColor = UIColor.lightGray
-            self.answerD.backgroundColor = playerColors[i].withAlphaComponent(0.65)
-        
-        }
-        
+        self.answerA.backgroundColor = UIColor.lightGray
+        self.answerB.backgroundColor = UIColor.lightGray
+        self.answerC.backgroundColor = UIColor.lightGray
+        self.answerD.backgroundColor = playerColors[passedData.index(of: receivedPeerID.displayName)!].withAlphaComponent(0.65)
+     
     }
     
     func answerDSubmit() {
-        for i in 0..<passedData.count {
-            self.bubbles[i].isHidden = false
-            self.answerD.backgroundColor = playerColors[i]
-            self.answerLabels[i].text = "D"
-            self.answerLabels[i].textColor = playerColors[i]
-            removeAllGestureRecognizers()
+        let answerToSend = "D"
+        let dataToSend =  NSKeyedArchiver.archivedData(withRootObject: answerToSend)
+        
+            do {
+                try self.receivedSession.send(dataToSend, toPeers: self.receivedSession.connectedPeers, with: .unreliable)
+            }
+            
+            catch let error {
+                print("[[Error]] \(error)")
+            
+            }
+
+        updateGameView(answer: "D", id: receivedPeerID)
+        removeAllGestureRecognizers()
+   
+    }
+    
+    func updateGameView(answer: String, id: MCPeerID) {
+        if id == receivedPeerID {
+        switch answer {
+            case "A":
+                self.bubbles[passedData.index(of: id.displayName)!].isHidden = false
+                self.answerA.backgroundColor = playerColors[passedData.index(of: id.displayName)!]
+                self.answerLabels[passedData.index(of: id.displayName)!].text = "A"
+                self.answerLabels[passedData.index(of: id.displayName)!].textColor = playerColors[passedData.index(of: id.displayName)!]
+            
+            case "B":
+                self.bubbles[passedData.index(of: id.displayName)!].isHidden = false
+                self.answerB.backgroundColor = playerColors[passedData.index(of: id.displayName)!]
+                self.answerLabels[passedData.index(of: id.displayName)!].text = "B"
+                self.answerLabels[passedData.index(of: id.displayName)!].textColor = playerColors[passedData.index(of: id.displayName)!]
+            
+            case "C":
+                self.bubbles[passedData.index(of: id.displayName)!].isHidden = false
+                self.answerC.backgroundColor = playerColors[passedData.index(of: id.displayName)!]
+                self.answerLabels[passedData.index(of: id.displayName)!].text = "C"
+                self.answerLabels[passedData.index(of: id.displayName)!].textColor = playerColors[passedData.index(of: id.displayName)!]
+            
+            case "D":
+                self.bubbles[passedData.index(of: id.displayName)!].isHidden = false
+                self.answerD.backgroundColor = playerColors[passedData.index(of: id.displayName)!]
+                self.answerLabels[passedData.index(of: id.displayName)!].text = "D"
+                self.answerLabels[passedData.index(of: id.displayName)!].textColor = playerColors[passedData.index(of: id.displayName)!]
+            
+            default:
+                break;
+            
+            }
+            
+        } else {
+            
+                switch answer {
+                case "A":
+                self.bubbles[passedData.index(of: id.displayName)!].isHidden = false
+                self.answerA.backgroundColor = playerColors[passedData.index(of: id.displayName)!]
+                self.answerLabels[passedData.index(of: id.displayName)!].text = "A"
+                self.answerLabels[passedData.index(of: id.displayName)!].textColor = playerColors[passedData.index(of: id.displayName)!]
+                
+                case "B":
+                self.bubbles[passedData.index(of: id.displayName)!].isHidden = false
+                self.answerB.backgroundColor = playerColors[passedData.index(of: id.displayName)!]
+                self.answerLabels[passedData.index(of: id.displayName)!].text = "B"
+                self.answerLabels[passedData.index(of: id.displayName)!].textColor = playerColors[passedData.index(of: id.displayName)!]
+                
+                case "C":
+                self.bubbles[passedData.index(of: id.displayName)!].isHidden = false
+                self.answerC.backgroundColor = playerColors[passedData.index(of: id.displayName)!]
+                self.answerLabels[passedData.index(of: id.displayName)!].text = "C"
+                self.answerLabels[passedData.index(of: id.displayName)!].textColor = playerColors[passedData.index(of: id.displayName)!]
+                
+                case "D":
+                self.bubbles[passedData.index(of: id.displayName)!].isHidden = false
+                self.answerD.backgroundColor = playerColors[passedData.index(of: id.displayName)!]
+                self.answerLabels[passedData.index(of: id.displayName)!].text = "D"
+                self.answerLabels[passedData.index(of: id.displayName)!].textColor = playerColors[passedData.index(of: id.displayName)!]
+                
+                default:
+                break;
+                
+            }
             
         }
         
@@ -380,7 +462,7 @@ class QuizScreen: UIViewController {
     }
     
     @IBAction func playAgain(_ sender: UIButton) {
-        let string = passedPeers.peerID.displayName
+        let string = receivedPeerID.displayName
         
         let testOutput = UIAlertController(title: "Device Name and Index", message: string + " passed data: \(passedData!).", preferredStyle: .alert)
         let myAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil)
@@ -388,5 +470,47 @@ class QuizScreen: UIViewController {
             self.present(testOutput, animated: true, completion: nil)
 
     }
+    
+    /***Required for Session Delegate***/
+    func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
+        
+    }
+    
+    func session(_ session: MCSession, didReceive newData: Data, fromPeer peerID: MCPeerID) {
+        DispatchQueue.main.async(execute: {
+            
+            if let receivedAnswer = NSKeyedUnarchiver.unarchiveObject(with: newData) as? String{
+                self.updateGameView(answer: receivedAnswer, id: peerID)
+                
+            }
+            
+        })
+        
+    }
+    
+    func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
+        
+    }
+    
+    func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {
+        
+    }
+    
+    func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL, withError error: Error?) {
+        
+    }
+    /***End of Session Delegate Functions***/
+    
+    /***Required functions for MCBrowser ViewController Delegate***/
+    func browserViewControllerDidFinish(_ browserViewController: MCBrowserViewController) {
+        browserViewController.dismiss(animated: true, completion: nil)
+        
+    }
+    
+    func browserViewControllerWasCancelled(_ browserViewController: MCBrowserViewController) {
+        browserViewController.dismiss(animated: true, completion: nil)
+        
+    }
+    /***End of MCBrowser ViewController Delegate Functions***/
     
 }
