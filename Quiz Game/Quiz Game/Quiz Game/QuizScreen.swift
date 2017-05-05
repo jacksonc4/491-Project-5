@@ -62,8 +62,8 @@ class QuizScreen: UIViewController {
         super.viewDidLoad()
     
         qarray = []
-        playAgain.alpha = 0
-        playAgain.isUserInteractionEnabled = false
+        playAgain.alpha = 1
+        playAgain.isUserInteractionEnabled = true
         createPlayerIcons()
         formatGameFields()
         updatePlayers()
@@ -279,71 +279,95 @@ class QuizScreen: UIViewController {
         
     }
     
-    func answerASelected() { //Determine selection color by player position in passedData array?
-        self.answerA.backgroundColor = playerColors[passedData.index(of: passedPeers.peerID.displayName)!].withAlphaComponent(0.75)
-        self.answerB.backgroundColor = UIColor.lightGray
-        self.answerC.backgroundColor = UIColor.lightGray
-        self.answerD.backgroundColor = UIColor.lightGray
+    func answerASelected() {
+        for i in 0..<passedData.count {
+            self.answerA.backgroundColor = playerColors[i].withAlphaComponent(0.75)
+            self.answerB.backgroundColor = UIColor.lightGray
+            self.answerC.backgroundColor = UIColor.lightGray
+            self.answerD.backgroundColor = UIColor.lightGray
+            
+        }
         
     }
     
     func answerASubmit() {
-        self.bubbles[passedData.index(of: passedPeers.peerID.displayName)!].isHidden = false
-        self.answerA.backgroundColor = playerColors[passedData.index(of: passedPeers.peerID.displayName)!]
-        self.answerLabels[passedData.index(of: passedPeers.peerID.displayName)!].text = "A"
-        self.answerLabels[passedData.index(of: passedPeers.peerID.displayName)!].textColor = playerColors[passedData.index(of: passedPeers.peerID.displayName)!]
-        removeAllGestureRecognizers()
+        for i in 0..<passedData.count {
+            self.bubbles[i].isHidden = false
+            self.answerA.backgroundColor = playerColors[i]
+            self.answerLabels[i].text = "A"
+            self.answerLabels[i].textColor = playerColors[i]
+            removeAllGestureRecognizers()
+            
+        }
         
     }
     
     func answerBSelected() {
-        self.answerA.backgroundColor = UIColor.lightGray
-        self.answerB.backgroundColor = playerColors[passedData.index(of: passedPeers.peerID.displayName)!].withAlphaComponent(0.65)
-        self.answerC.backgroundColor = UIColor.lightGray
-        self.answerD.backgroundColor = UIColor.lightGray
+        for i in 0..<passedData.count {
+            self.answerA.backgroundColor = UIColor.lightGray
+            self.answerB.backgroundColor = playerColors[i].withAlphaComponent(0.65)
+            self.answerC.backgroundColor = UIColor.lightGray
+            self.answerD.backgroundColor = UIColor.lightGray
+        
+        }
         
     }
     
     func answerBSubmit() {
-        self.bubbles[passedData.index(of: passedPeers.peerID.displayName)!].isHidden = false
-        self.answerB.backgroundColor = playerColors[passedData.index(of: passedPeers.peerID.displayName)!]
-        self.answerLabels[passedData.index(of: passedPeers.peerID.displayName)!].text = "B"
-        self.answerLabels[passedData.index(of: passedPeers.peerID.displayName)!].textColor = playerColors[passedData.index(of: passedPeers.peerID.displayName)!]
-        removeAllGestureRecognizers()
+        for i in 0..<passedData.count {
+            self.bubbles[i].isHidden = false
+            self.answerB.backgroundColor = playerColors[i]
+            self.answerLabels[i].text = "B"
+            self.answerLabels[i].textColor = playerColors[i]
+            removeAllGestureRecognizers()
+            
+        }
         
     }
     
     func answerCSelected() {
-        self.answerA.backgroundColor = UIColor.lightGray
-        self.answerB.backgroundColor = UIColor.lightGray
-        self.answerC.backgroundColor = playerColors[passedData.index(of: passedPeers.peerID.displayName)!].withAlphaComponent(0.65)
-        self.answerD.backgroundColor = UIColor.lightGray
+        for i in 0..<passedData.count {
+            self.answerA.backgroundColor = UIColor.lightGray
+            self.answerB.backgroundColor = UIColor.lightGray
+            self.answerC.backgroundColor = playerColors[i].withAlphaComponent(0.65)
+            self.answerD.backgroundColor = UIColor.lightGray
+        
+        }
         
     }
     
     func answerCSubmit() {
-        self.bubbles[passedData.index(of: passedPeers.peerID.displayName)!].isHidden = false
-        self.answerC.backgroundColor = playerColors[passedData.index(of: passedPeers.peerID.displayName)!]
-        self.answerLabels[passedData.index(of: passedPeers.peerID.displayName)!].text = "C"
-        self.answerLabels[passedData.index(of: passedPeers.peerID.displayName)!].textColor = playerColors[passedData.index(of: passedPeers.peerID.displayName)!]
-        removeAllGestureRecognizers()
+        for i in 0..<passedData.count {
+            self.bubbles[i].isHidden = false
+            self.answerC.backgroundColor = playerColors[i]
+            self.answerLabels[i].text = "C"
+            self.answerLabels[i].textColor = playerColors[i]
+            removeAllGestureRecognizers()
+        
+        }
 
     }
     
     func answerDSelected() {
-        self.answerA.backgroundColor = UIColor.lightGray
-        self.answerB.backgroundColor = UIColor.lightGray
-        self.answerC.backgroundColor = UIColor.lightGray
-        self.answerD.backgroundColor = playerColors[passedData.index(of: passedPeers.peerID.displayName)!].withAlphaComponent(0.65)
+        for i in 0..<passedData.count {
+            self.answerA.backgroundColor = UIColor.lightGray
+            self.answerB.backgroundColor = UIColor.lightGray
+            self.answerC.backgroundColor = UIColor.lightGray
+            self.answerD.backgroundColor = playerColors[i].withAlphaComponent(0.65)
+        
+        }
         
     }
     
     func answerDSubmit() {
-        self.bubbles[passedData.index(of: passedPeers.peerID.displayName)!].isHidden = false
-        self.answerD.backgroundColor = playerColors[passedData.index(of: passedPeers.peerID.displayName)!]
-        self.answerLabels[passedData.index(of: passedPeers.peerID.displayName)!].text = "D"
-        self.answerLabels[passedData.index(of: passedPeers.peerID.displayName)!].textColor = playerColors[passedData.index(of: passedPeers.peerID.displayName)!]
-        removeAllGestureRecognizers()
+        for i in 0..<passedData.count {
+            self.bubbles[i].isHidden = false
+            self.answerD.backgroundColor = playerColors[i]
+            self.answerLabels[i].text = "D"
+            self.answerLabels[i].textColor = playerColors[i]
+            removeAllGestureRecognizers()
+            
+        }
         
     }
     
@@ -353,6 +377,16 @@ class QuizScreen: UIViewController {
         self.answerC.gestureRecognizers?.forEach(answerC.removeGestureRecognizer(_:))
         self.answerD.gestureRecognizers?.forEach(answerD.removeGestureRecognizer(_:))
         
+    }
+    
+    @IBAction func playAgain(_ sender: UIButton) {
+        let string = passedPeers.peerID.displayName
+        
+        let testOutput = UIAlertController(title: "Device Name and Index", message: string + " passed data: \(passedData!).", preferredStyle: .alert)
+        let myAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil)
+            testOutput.addAction(myAction)
+            self.present(testOutput, animated: true, completion: nil)
+
     }
     
 }

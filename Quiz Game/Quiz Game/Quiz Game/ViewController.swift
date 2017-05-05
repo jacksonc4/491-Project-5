@@ -55,7 +55,7 @@ class ViewController: UIViewController, MCBrowserViewControllerDelegate, MCSessi
         switch gamePlayerCount.selectedSegmentIndex {
             
         case 0:
-            if session.connectedPeers.count > 0{
+            if session.connectedPeers.count > 0 {
                 let tooManyPlayers = UIAlertController(title: "Too Many Players", message: "Select a multiplayer game instead.", preferredStyle: .alert)
                 let myAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil)
                     tooManyPlayers.addAction(myAction)
