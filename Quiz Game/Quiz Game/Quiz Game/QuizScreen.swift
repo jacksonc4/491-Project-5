@@ -9,6 +9,7 @@
 import UIKit
 import MultipeerConnectivity
 import Foundation
+import CoreMotion
 
 struct defaultValue {
     var icon:UIImage!
@@ -55,41 +56,112 @@ class QuizScreen: UIViewController, MCSessionDelegate {
     var answerLabels:[UILabel] = []
     
     var questionStruct = questionData()
+    var currentJson = 0
     var totalNumQuestions = 0
+    var currentQuestionNum = -1
     var currentTopic = ""
     var timer = Timer()
     var counter = 0
     
+    var numPlayers = 1
+    var submittedAnswers = 0
+    var thisPlayerAnswer = ""
+    var score = 0
+    
+    var motionManager: CMMotionManager!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     
+        currentJson += 1
         qarray = []
         playAgain.alpha = 1
         playAgain.isUserInteractionEnabled = true
+        playAgain.isHidden = true
         createPlayerIcons()
         formatGameFields()
         updatePlayers()
         addGestureRecognizers()
         
-        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.updateTimer), userInfo: nil, repeats: true)
-        
-        getQuestions()
+        self.getQuestions()
         
         print("Session info from Quiz Screen")
         print("Connected peers: \(receivedSession.connectedPeers.count)")
+        numPlayers += receivedSession.connectedPeers.count
         print("Total players passed to Quiz Screen: \(passedData)")
         print(receivedPeerID.displayName)
         
+        self.motionManager = CMMotionManager()
+        
+        self.motionManager.deviceMotionUpdateInterval = 1.0/60.0
+        self.motionManager.startDeviceMotionUpdates(using: .xArbitraryCorrectedZVertical)
+        
+        monitorDeviceOrientation()
+        Timer.scheduledTimer(timeInterval: 0.02, target: self, selector: #selector(updateDeviceMotion), userInfo: nil, repeats: true)
+        
+        
+    }
+    
+    func updateDeviceMotion(){
+        
+        if let data = self.motionManager.deviceMotion {
+            
+            // orientation of body relative to a reference frame
+            let attitude = data.attitude
+            
+            let userAcceleration = data.userAcceleration
+            
+            let gravity = data.gravity
+            let rotation = data.rotationRate
+            
+            print("pitch: \(attitude.pitch), roll: \(attitude.roll), yaw: \(attitude.yaw)")
+            
+        }
+        
+    }
+    
+    func startTimer() {
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.updateTimer), userInfo: nil, repeats: true)
     }
 
     func updateTimer() {
-        let remaining = 20 - counter
-        self.timerLabel.text = String(remaining)
+            updateQuestion()
+            let remaining = 20 - counter
+            self.timerLabel.text = String(remaining)
+            counter += 1
+            
+            if (counter == 21) {
+                counter = 0
+                timer.invalidate()
+                removeAllGestureRecognizers()
+                questionLabel.text = "Time's up! Correct answer: \(qarray[currentQuestionNum].correctOption!)"
+                timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.pauseGame), userInfo: nil, repeats: true)
+            }
+
+    }
+    
+    func pauseGame() {
         counter += 1
+        let remaining = 4 - counter
+        self.timerLabel.text = String(remaining)
         
-        if (counter == 21) {
+        if counter == 4 {
             counter = 0
             timer.invalidate()
+            addGestureRecognizers()
+            currentQuestionNum += 1
+            if currentQuestionNum < qarray.count && currentQuestionNum != qarray.count {
+                updateQuestion()
+                resetState()
+                timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.updateTimer), userInfo: nil, repeats: true)
+            } else {
+                playAgain.isHidden = false
+                currentQuestionNum = -1
+                // player win logic here
+                questionLabel.text = "Winner: Player 1!" // temp
+                
+            }
+            
         }
     }
     
@@ -120,6 +192,8 @@ class QuizScreen: UIViewController, MCSessionDelegate {
             playAgain.layer.masksToBounds = true
         
     }
+    
+    
 
     func createPlayerIcons() {
         let screenSize = view.frame.size
@@ -134,10 +208,8 @@ class QuizScreen: UIViewController, MCSessionDelegate {
             let answerLabel = UILabel()
                 bubble.frame = CGRect(x: 0, y: 0, width: 78, height: 50)
                 bubble.isHidden = true
-                    bubble.tag = i
                 answerLabel.frame = CGRect(x: bubble.center.x - 10, y: bubble.center.y / 2 - 15, width: 39, height: 45)
                 answerLabel.font = UIFont.boldSystemFont(ofSize: 24)
-                    answerLabel.tag = i
 
             let x_position = CGFloat((Int(screenWidth)/2) - (4 * 79) / 2 + (i * 79))
             let frame = CGRect(x: x_position, y: 200, width: 78, height: 128)
@@ -154,9 +226,7 @@ class QuizScreen: UIViewController, MCSessionDelegate {
                 scoreLabel.text = "\(defaultValues[i].score!)"
                 scoreLabel.textColor = UIColor.lightGray
                 scoreLabel.textAlignment = NSTextAlignment.center
-                    blank.tag = i
-                    nameLabel.tag = i
-                    scoreLabel.tag = i
+                    scoreLabel.tag = i+1
             
                 playerIcons.append(blank)
                 nameLabels.append(nameLabel)
@@ -216,68 +286,151 @@ class QuizScreen: UIViewController, MCSessionDelegate {
         
     }
     
-    var qarray = [String]()
+    var qarray = [questionData]()
     
     func getQuestions() {
         
-        let urlString = "http://www.people.vcu.edu/~ebulut/jsonFiles/quiz1.json"
+        let urlString = "http://www.people.vcu.edu/~ebulut/jsonFiles/quiz\(currentJson).json"
         let url = URL(string: urlString)
         let urlsession = URLSession.shared
         
-        // create a data task
-        let task = urlsession.dataTask(with: url!, completionHandler: { (data, response, error) in
-            
-            if let result = data{
-                
-                print("inside get JSON")
-                print(result)
-                do{
-                    let json = try JSONSerialization.jsonObject(with: result, options: .allowFragments)
-                    
-                    if let dictionary = json as? [String:Any]{
-                        self.totalNumQuestions = dictionary["numberOfQuestions"] as! Int
-                        self.currentTopic = dictionary["topic"] as! String
-                        if let questions = dictionary["questions"] as? [[String:Any]] {
-                            
-                            let currentQuestion = questions[0] as! [String:Any]
-                            let questionText = currentQuestion["questionSentence"] as! String
-                            let number = currentQuestion["number"] as! Int
-                            let correctOption = currentQuestion["correctOption"] as! String
-                            let options = currentQuestion["options"] as! [String:Any]
-                            
-                            var tempArray = [String]()
-                            tempArray.append(options["A"] as! String)
-                            tempArray.append(options["B"] as! String)
-                            tempArray.append(options["C"] as! String)
-                            tempArray.append(options["D"] as! String)
-                            
-                            self.questionStruct = questionData(number: number, questionText: questionText, options: tempArray, correctOption: correctOption)
-                            
-                        }
-                        
+        
+        if currentQuestionNum < totalNumQuestions {
+            currentQuestionNum += 1
 
+            // create a data task
+            let task = urlsession.dataTask(with: url!, completionHandler: { (data, response, error) in
+                
+                if let result = data{
+                    
+                    print("inside get JSON")
+                    print(result)
+                    do{
+                        let json = try JSONSerialization.jsonObject(with: result, options: .allowFragments)
+                        
+                        if let dictionary = json as? [String:Any]{
+                              self.currentTopic = dictionary["topic"] as! String
+                            if let questions = dictionary["questions"] as? [[String:Any]] {
+                                
+                                for question in questions {
+                                    let questionText = question["questionSentence"] as! String
+                                    let number = question["number"] as! Int
+                                    let correctOption = question["correctOption"] as! String
+                                    let options = question["options"] as! [String:Any]
+                                    
+                                    var tempArray = [String]()
+                                    tempArray.append(options["A"] as! String)
+                                    tempArray.append(options["B"] as! String)
+                                    tempArray.append(options["C"] as! String)
+                                    tempArray.append(options["D"] as! String)
+                                    
+                                    self.questionStruct = questionData(number: number, questionText: questionText, options: tempArray, correctOption: correctOption)
+                                    
+                                    self.qarray.append(self.questionStruct)
+                                }
+                                
+                            }
+                        }
+                        print(self.qarray)
+                        self.updateQuestion()
+                        
                     }
-                    print(self.questionStruct)
-                    self.updateQuestion()
+                    catch{
+                        let urlString = "http://www.people.vcu.edu/~ebulut/jsonFiles/quiz1.json"
+                        let url = URL(string: urlString)
+                        let urlsession = URLSession.shared
+                        
+                        self.currentJson = 1
+                            // create a data task
+                            let task = urlsession.dataTask(with: url!, completionHandler: { (data, response, error) in
+                                
+                                if let result = data{
+                                    
+                                    print("inside get JSON")
+                                    print(result)
+                                    do{
+                                        let json = try JSONSerialization.jsonObject(with: result, options: .allowFragments)
+                                        
+                                        if let dictionary = json as? [String:Any]{
+                                            self.currentTopic = dictionary["topic"] as! String
+                                            if let questions = dictionary["questions"] as? [[String:Any]] {
+                                                
+                                                for question in questions {
+                                                    let questionText = question["questionSentence"] as! String
+                                                    let number = question["number"] as! Int
+                                                    let correctOption = question["correctOption"] as! String
+                                                    let options = question["options"] as! [String:Any]
+                                                    
+                                                    var tempArray = [String]()
+                                                    tempArray.append(options["A"] as! String)
+                                                    tempArray.append(options["B"] as! String)
+                                                    tempArray.append(options["C"] as! String)
+                                                    tempArray.append(options["D"] as! String)
+                                                    
+                                                    self.questionStruct = questionData(number: number, questionText: questionText, options: tempArray, correctOption: correctOption)
+                                                    
+                                                    self.qarray.append(self.questionStruct)
+                                                }
+                                                
+                                            }
+                                        }
+                                        print(self.qarray)
+                                        self.updateQuestion()
+                                        
+                                    }
+                                    catch{
+                                        print("Error")
+                                    }
+                                }
+                            })
+                            // always call resume() to start
+                            task.resume()
+                            self.startTimer()
+                            
+                    }
                 }
-                catch{
-                    print("Error")
-                }
+            })
+            // always call resume() to start
+            task.resume()
+            self.startTimer()
+            
+        } else {
+            
+        }
+
+    }
+
+
+    func checkSubmittedAnswers() {
+        if (numPlayers == submittedAnswers) {
+            timer.invalidate()
+            counter = 0
+            removeAllGestureRecognizers()
+            questionLabel.text = "Time's up! Correct answer: \(qarray[currentQuestionNum].correctOption!)"
+            timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.pauseGame), userInfo: nil, repeats: true)
+            pauseGame()
+            if (thisPlayerAnswer == qarray[currentQuestionNum].correctOption!) {
+                let scorelabel = self.view.viewWithTag(1) as! UILabel
+                
+                score += 1
+                
+                scorelabel.text = String(score)
             }
             
-        })
-        // always call resume() to start
-        task.resume()
+            thisPlayerAnswer = ""
+            submittedAnswers = 0
+        }
     }
     
     func updateQuestion() {
-        self.ALabel.text = questionStruct.options[0]
-        self.BLabel.text = questionStruct.options[1]
-        self.CLabel.text = questionStruct.options[2]
-        self.DLabel.text = questionStruct.options[3]
-        self.questionLabel.text = questionStruct.questionText
+        print(qarray[currentQuestionNum])
+        self.ALabel.text = qarray[currentQuestionNum].options[0]
+        self.BLabel.text = qarray[currentQuestionNum].options[1]
+        self.CLabel.text = qarray[currentQuestionNum].options[2]
+        self.DLabel.text = qarray[currentQuestionNum].options[3]
+        self.questionLabel.text = qarray[currentQuestionNum].questionText
         self.gameStatus.text = currentTopic
-        self.questionNumber.text = "Question \(questionStruct.number!)/\(totalNumQuestions)"
+        self.questionNumber.text = "Question \(qarray[currentQuestionNum].number!)/\(qarray.count)"
         
     }
     
@@ -304,7 +457,9 @@ class QuizScreen: UIViewController, MCSessionDelegate {
 
         updateGameView(answer: "A", id: receivedPeerID)
         removeAllGestureRecognizers()
-        
+        submittedAnswers += 1
+        thisPlayerAnswer = "A"
+        checkSubmittedAnswers()
     }
     
     func answerBSelected() {
@@ -330,7 +485,9 @@ class QuizScreen: UIViewController, MCSessionDelegate {
 
         updateGameView(answer: "B", id: receivedPeerID)
         removeAllGestureRecognizers()
-        
+        submittedAnswers += 1
+        thisPlayerAnswer = "B"
+        checkSubmittedAnswers()
     }
     
     func answerCSelected() {
@@ -356,7 +513,9 @@ class QuizScreen: UIViewController, MCSessionDelegate {
 
         updateGameView(answer: "C", id: receivedPeerID)
         removeAllGestureRecognizers()
-    
+        submittedAnswers += 1
+        thisPlayerAnswer = "C"
+        checkSubmittedAnswers()
     }
     
     func answerDSelected() {
@@ -382,7 +541,9 @@ class QuizScreen: UIViewController, MCSessionDelegate {
 
         updateGameView(answer: "D", id: receivedPeerID)
         removeAllGestureRecognizers()
-   
+        submittedAnswers += 1
+        thisPlayerAnswer = "D"
+        checkSubmittedAnswers()
     }
     
     func updateGameView(answer: String, id: MCPeerID) {
@@ -453,6 +614,14 @@ class QuizScreen: UIViewController, MCSessionDelegate {
         
     }
     
+    func resetState() {
+        self.bubbles[0].isHidden = true
+        self.answerA.backgroundColor = UIColor.lightGray
+        self.answerB.backgroundColor = UIColor.lightGray
+        self.answerC.backgroundColor = UIColor.lightGray
+        self.answerD.backgroundColor = UIColor.lightGray
+    }
+    
     func removeAllGestureRecognizers() {
         self.answerA.gestureRecognizers?.forEach(answerA.removeGestureRecognizer(_:))
         self.answerB.gestureRecognizers?.forEach(answerB.removeGestureRecognizer(_:))
@@ -462,13 +631,37 @@ class QuizScreen: UIViewController, MCSessionDelegate {
     }
     
     @IBAction func playAgain(_ sender: UIButton) {
-        let string = receivedPeerID.displayName
         
-        let testOutput = UIAlertController(title: "Device Name and Index", message: string + " passed data: \(passedData!).", preferredStyle: .alert)
-        let myAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil)
-            testOutput.addAction(myAction)
-            self.present(testOutput, animated: true, completion: nil)
+        let testOutput = UIAlertController(title: "Restart?", message: "", preferredStyle: .alert)
+        let myAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: restartGame)
+        let cancel = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.default, handler: nil)
+        testOutput.addAction(myAction)
+        testOutput.addAction(cancel)
+        self.present(testOutput, animated: true, completion: nil)
 
+    }
+    
+    func restartGame(action: UIAlertAction) {
+        totalNumQuestions = 0
+        currentQuestionNum = -1
+        currentTopic = ""
+        counter = 0
+        submittedAnswers = 0
+        thisPlayerAnswer = ""
+        score = 0
+        
+        currentJson += 1
+        qarray = []
+        
+        self.getQuestions()
+        
+        playAgain.isHidden = true
+        
+        print("Session info from Quiz Screen")
+        print("Connected peers: \(receivedSession.connectedPeers.count)")
+        numPlayers += receivedSession.connectedPeers.count
+        print("Total players passed to Quiz Screen: \(passedData)")
+        print(receivedPeerID.displayName)
     }
     
     /***Required for Session Delegate***/
@@ -512,5 +705,31 @@ class QuizScreen: UIViewController, MCSessionDelegate {
         
     }
     /***End of MCBrowser ViewController Delegate Functions***/
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        UIDevice.current.endGeneratingDeviceOrientationNotifications()
+    }
+    
+    func monitorDeviceOrientation(){
+        
+        UIDevice.current.beginGeneratingDeviceOrientationNotifications()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(orientationChanged(_:)), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
+    }
+    
+    func orientationChanged(_ notification: Notification){
+        print(UIDevice.current.orientation.rawValue)
+    }
+    
+    override func motionBegan(_ motion: UIEventSubtype, with event: UIEvent?) {
+        
+        if motion == .motionShake {
+            print("shaked")
+        }
+        
+    }
+    override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
+        print("motionEnded")
+    }
     
 }
